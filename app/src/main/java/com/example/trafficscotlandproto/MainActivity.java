@@ -1,6 +1,7 @@
 package com.example.trafficscotlandproto;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -38,44 +39,66 @@ public class MainActivity extends Activity {
 		
 		output = (TextView) findViewById(R.id.txtOutput);
 
+//        try {
+////            LoadRss();
+//            new RssTest().execute();
+//        } finally {
+//         //   output.setText(rssPlannedRoadworks);
+//        }
+
         try {
             LoadRss();
         } catch (IOException e) {
-            output.setText(e.toString());
-        } finally {
-            output.setText(rssPlannedRoadworks);
+            e.printStackTrace();
         }
-
     }
 
     private void LoadRss() throws IOException {
-        rssCurrentIncidents = getRawRssFeed("Incident");
-        rssPlannedRoadworks = getRawRssFeed("Planned");
-        rssRoadworks = getRawRssFeed("Roadworks");
+        new RssTest().execute("Incident");
+        new RssTest().execute("Planned");
+        new RssTest().execute("Roadworks");
     }
-    
-    private String getRawRssFeed(String rssType) throws IOException {
-        // Get RSS feed URL
-        URL rssFeedUrl = null;
-        switch(rssType) {
-            case "Roadworks":
-                rssFeedUrl = urlRoadworks;
-                break;
-            case "Planned":
-                rssFeedUrl = urlPlannedRoadworks;
-                break;
-            case "Incident":
-                rssFeedUrl = urlCurrentIncidents;
-                break;
+
+    class RssTest extends AsyncTask<String, Void, String> {
+
+        protected String doInBackground(String... rssType) {
+            URL rssFeedUrl = null;
+            try {
+            switch(rssType[0]) {
+                case "Roadworks":
+                    rssFeedUrl = urlRoadworks;
+                    rssRoadworks = getRawRssFeed(rssFeedUrl);
+                    break;
+                case "Planned":
+                    rssFeedUrl = urlPlannedRoadworks;
+                    rssPlannedRoadworks = getRawRssFeed(urlPlannedRoadworks);
+                    break;
+                case "Incident":
+                    rssFeedUrl = urlCurrentIncidents;
+                    rssCurrentIncidents = getRawRssFeed(rssFeedUrl);
+                    break;
+            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
-        // Return error message if switch breaks to aid debugging and skip rest of code
-        if (rssFeedUrl == null) return "Error";
+        protected void onPostExecute(String feed) {
+            // Do something on Main UI thread
+            output.setText(rssCurrentIncidents);
+        }
 
-        // Get and return RSS feed using Apaches IOUtils library
-        String rssFeedData = IOUtils.toString(rssFeedUrl, (Charset) null);
-        return rssFeedData;
+        private String getRawRssFeed(URL rssFeedUrl) throws IOException {
+            // Return error message if switch breaks to aid debugging and skip rest of code
+            if (rssFeedUrl == null) return "Error";
+
+            // Get and return RSS feed using Apaches IOUtils library
+            return IOUtils.toString(rssFeedUrl, (Charset) null);
+        }
     }
+
+
 
     public void showRoadworks(View view) {
         output.setText(rssRoadworks);
