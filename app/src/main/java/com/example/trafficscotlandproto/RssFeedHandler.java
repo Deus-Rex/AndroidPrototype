@@ -9,15 +9,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+// Gets Raw RSS feeds
 public class RssFeedHandler {
 
-    // RSS feed URLS
     private URL urlRoadworks;
     private URL urlPlannedRoadworks;
     private URL urlCurrentIncidents;
-
-    // Raw RSS data
-    private static String rssRoadworks = null;
+    public static String rssRoadworks = null;
     private static String rssPlannedRoadworks = null;
     private static String rssCurrentIncidents = null;
 
@@ -48,19 +46,15 @@ public class RssFeedHandler {
         }
     }
 
-    // Getters
+    //region Getters
 
-    public static String getRssPlannedRoadworks() {
-        return rssPlannedRoadworks;
-    }
+    public static String getRssPlannedRoadworks() { return rssPlannedRoadworks; }
 
-    public static String getRssRoadworks() {
-        return rssRoadworks;
-    }
+    public static String getRssRoadworks() { return rssRoadworks; }
 
-    public static String getRssCurrentIncidents() {
-        return rssCurrentIncidents;
-    }
+    public static String getRssCurrentIncidents() { return rssCurrentIncidents; }
+
+    //endregion
 
     // AsyncTask for getting the RSS feed as a background operation
     private class GetRssFeed extends AsyncTask<String, Void, String> {

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 public class MainActivity extends Activity {
 
     TextView output;
@@ -17,26 +15,23 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		output = (TextView) findViewById(R.id.txtOutput);
-        new RssFeedHandler();
+//        new RssFeedHandler();
+
     }
+
+    RssParser rssRoadworks = new RssParser("http://www.trafficscotland.org/rss/feeds/roadworks.aspx");
+    RssParser rssPlanned = new RssParser("http://trafficscotland.org/rss/feeds/plannedroadworks.aspx");
+    RssParser rssIncidents = new RssParser("http://trafficscotland.org/rss/feeds/currentincidents.aspx");
+
 
     // Buttons to show specific RSS feeds
     public void showRoadworks(View view) {
-//        showRawFeed(RssFeedHandler.getRssRoadworks());
 
-        try {
-            RssParser testParser = new RssParser();
-            output.setText(testParser.output);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            output.setText("IT FUCKED UP");
-        }
+        output.setText(rssRoadworks.output);
 
     }
-
-
-    public void showPlanned(View view) { showRawFeed(RssFeedHandler.getRssPlannedRoadworks()); }
-    public void showIncidents(View view) { showRawFeed(RssFeedHandler.getRssCurrentIncidents()); }
+    public void showPlanned(View view) { output.setText(rssPlanned.output); }
+    public void showIncidents(View view) { output.setText(rssIncidents.output); }
 
     // Validate and show RSS feed
     private void showRawFeed(String rssInput) {

@@ -1,5 +1,8 @@
 package com.example.trafficscotlandproto;
 
+import android.os.AsyncTask;
+
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -9,6 +12,10 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,56 +26,66 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class RssParser {
 
-    String output = null;
+    String output = "";
 
-    public RssParser() throws ParserConfigurationException {
-//        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//        DocumentBuilder builder = factory.newDocumentBuilder();
+    String rawRss;
+    ArrayList<TrafficItem> testArray;
 
-        output = "Test Parse";
+    public RssParser(String inputFeed) {
+        if (inputFeed == null) return;
 
         try {
-
-//            File inputFile = new File(RssFeedHandler.getRssCurrentIncidents());
-//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-//            Document doc = dBuilder.parse(inputFile);
-            Document doc = loadXmlFromString(RssFeedHandler.getRssCurrentIncidents());
-            doc.getDocumentElement().normalize();
-
-            output += "Root element :" + doc.getDocumentElement().getNodeName() + appendNewLine();
-
-            NodeList nList = doc.getElementsByTagName("item");
-            output += "----------------------------";
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node nNode = nList.item(temp);
-                output += "\nCurrent Element :" + nNode.getNodeName() + appendNewLine();
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    output += "Student roll no : " + eElement.getAttribute("title") + appendNewLine();
-                    output += "Description : "
-                            + eElement
-                            .getElementsByTagName("description")
-                            .item(0)
-                            .getTextContent() + appendNewLine();
-                    output += "Link : "
-                            + eElement
-                            .getElementsByTagName("link")
-                            .item(0)
-                            .getTextContent() + appendNewLine();
-                }
-            }
-        } catch (Exception e) {
+            // Get Data
+            URL rssURL = new URL(inputFeed);
+            new RawRssFeed().execute(rssURL);
+        } catch (MalformedURLException e) {
             e.printStackTrace();
-            output = null;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
 
-    private String appendNewLine() {
-        return "\n";
+//    public RssParser(String rssData) {
+//        if (rssData == null) return;
+//        parseRssData(rssData);
+//    }
+
+    private void parseRssData() {
+        // Create new TrafficItem ArrayList
+        testArray = new ArrayList<TrafficItem>();
+
+        // Convert RSS feed string to Document for parsing
+        Document rssData = loadXmlFromString(rawRss);
+        rssData.getDocumentElement().normalize();
+
+        // Parse the RSS feed for the individual items
+        NodeList rssFeedItems = rssData.getElementsByTagName("item");
+
+        // Parse each item for data
+        for (int i = 0; i < rssFeedItems.getLength(); i++) {
+            // Item currently focused on
+            Node currentItem = rssFeedItems.item(i);
+
+
+
+            if (currentItem.getNodeType() == Node.ELEMENT_NODE) {
+                // Create new TrafficItem object
+                TrafficItem newItem = new TrafficItem();
+
+                Element eElement = (Element) currentItem;
+                newItem.setTitle(eElement.getElementsByTagName("title").item(0).getTextContent());
+                newItem.setDescription(eElement.getElementsByTagName("description").item(0).getTextContent());
+                newItem.setLink(eElement.getElementsByTagName("link").item(0).getTextContent());
+                newItem.setDate(eElement.getElementsByTagName("pubDate").item(0).getTextContent());
+                newItem.setGeorss(eElement.getElementsByTagName("georss:point").item(0).getTextContent());
+
+                testArray.add(newItem);
+                output += newItem.toString();
+            }
+        }
     }
+
+
 
     private Document loadXmlFromString(String xml) {
         try {
@@ -85,5 +102,30 @@ public class RssParser {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    private class RawRssFeed extends AsyncTask<URL, Void, String> {
+
+        // Runs in background to get the RSS feed
+        protected String doInBackground(URL... rssFeedUrl) {
+            if (rssFeedUrl == null) return null;
+            String rawRssFeed;
+            // Get and return RSS feed using Apaches IOUtils library
+            try {
+                rawRssFeed = IOUtils.toString(rssFeedUrl[0], (Charset) null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                rawRssFeed = null;
+            }
+            rawRss = rawRssFeed;
+            return rawRssFeed;
+        }
+
+        // Runs on main UI thread after the background task finishes
+        protected void onPostExecute(String feed) {
+            parseRssData();
+
+        }
     }
 }
