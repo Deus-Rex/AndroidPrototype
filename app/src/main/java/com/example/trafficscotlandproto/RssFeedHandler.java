@@ -17,10 +17,9 @@ public class RssFeedHandler {
     private URL urlCurrentIncidents;
 
     // Raw RSS data
-    public static String rssRoadworks = null;
-    public static String rssPlannedRoadworks = null;
-    public static String rssCurrentIncidents = null;
-
+    private static String rssRoadworks = null;
+    private static String rssPlannedRoadworks = null;
+    private static String rssCurrentIncidents = null;
 
     // Default: get all RSS feeds
     public RssFeedHandler() {
@@ -49,13 +48,26 @@ public class RssFeedHandler {
         }
     }
 
+    // Getters
+
+    public static String getRssPlannedRoadworks() {
+        return rssPlannedRoadworks;
+    }
+
+    public static String getRssRoadworks() {
+        return rssRoadworks;
+    }
+
+    public static String getRssCurrentIncidents() {
+        return rssCurrentIncidents;
+    }
+
     // AsyncTask for getting the RSS feed as a background operation
     private class GetRssFeed extends AsyncTask<String, Void, String> {
 
         // Runs in background to get the RSS feed
         protected String doInBackground(String... rssType) {
-            URL rssFeedUrl = null;
-
+            URL rssFeedUrl;
                 switch(rssType[0]) {
                     case "Roadworks":
                         rssFeedUrl = urlRoadworks;

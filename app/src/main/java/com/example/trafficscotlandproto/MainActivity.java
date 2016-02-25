@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 public class MainActivity extends Activity {
 
     TextView output;
@@ -18,19 +20,25 @@ public class MainActivity extends Activity {
         new RssFeedHandler();
     }
 
+    // Buttons to show specific RSS feeds
     public void showRoadworks(View view) {
-        showRawFeed(RssFeedHandler.rssRoadworks);
+//        showRawFeed(RssFeedHandler.getRssRoadworks());
+
+        try {
+            RssParser testParser = new RssParser();
+            output.setText(testParser.output);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            output.setText("IT FUCKED UP");
+        }
+
     }
 
-    public void showPlanned(View view) {
-        showRawFeed(RssFeedHandler.rssPlannedRoadworks);
 
-    }
+    public void showPlanned(View view) { showRawFeed(RssFeedHandler.getRssPlannedRoadworks()); }
+    public void showIncidents(View view) { showRawFeed(RssFeedHandler.getRssCurrentIncidents()); }
 
-    public void showIncidents(View view) {
-        showRawFeed(RssFeedHandler.rssCurrentIncidents);
-    }
-
+    // Validate and show RSS feed
     private void showRawFeed(String rssInput) {
         if (rssInput == null) {
             output.setText("Problem loading RSS feed.");
@@ -38,6 +46,7 @@ public class MainActivity extends Activity {
         }
         else {
             output.setText(rssInput);
+            return;
         }
     }
 }
