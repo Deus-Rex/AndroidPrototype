@@ -19,6 +19,18 @@ public class TrafficItem {
     private Float geoRssY;
     private Date date; // Find a date datatype
 
+    public TrafficItem(){
+        
+    }
+
+    public TrafficItem(String newTitle, String newDescription, String newLink, String newCoord, String newDate){
+        setTitle(newTitle);
+        setDescription(newDescription);
+        setLink(newLink);
+        setGeorss(newCoord);
+        setDate(newDate);
+    }
+
     @Override
     public String toString(){
         String output = "";
