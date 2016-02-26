@@ -15,72 +15,69 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-/**
- * Created by ryan on 25/02/16.
- */
 public class RssParser {
 
-    String output = "";
-
+    Date currentBuildDate = null;
     String rawRss;
-    ArrayList<TrafficItem> testArray;
 
-    public RssParser(String inputFeed) {
-        if (inputFeed == null) return;
+    ArrayList<TrafficItem> Items;
+
+    public RssParser(String inputRssUrl) {
+        if (inputRssUrl == null) return;
 
         try {
-            // Get Data
-            URL rssURL = new URL(inputFeed);
+            URL rssURL = new URL(inputRssUrl);
             new RawRssFeed().execute(rssURL);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-//    public RssParser(String rssData) {
-//        if (rssData == null) return;
-//        parseRssData(rssData);
-//    }
-
     private void parseRssData() {
-        // Create new TrafficItem ArrayList
-        testArray = new ArrayList<TrafficItem>();
+        Items = new ArrayList<>(); // reset arraylist
 
         // Convert RSS feed string to Document for parsing
         Document rssData = loadXmlFromString(rawRss);
+        if (rssData == null) return;
         rssData.getDocumentElement().normalize();
 
-        // Parse the RSS feed for the individual items
+        // Get date from RSS feed, if it's the same as current, stop, otherwise set new date and continue
+        Date newBuildDate = toDate(rssData.getElementsByTagName("lastBuildDate").item(0).getTextContent());
+        if (newBuildDate == currentBuildDate) return;
+        currentBuildDate = newBuildDate;
+
+        // Split feed into individual items
         NodeList rssFeedItems = rssData.getElementsByTagName("item");
 
         // Parse each item for data
         for (int i = 0; i < rssFeedItems.getLength(); i++) {
-            // Item currently focused on
-            Node currentItem = rssFeedItems.item(i);
+            Node currentNode = rssFeedItems.item(i);
 
-
-
-            if (currentItem.getNodeType() == Node.ELEMENT_NODE) {
+            // Cycle through each item and extract data to data class
+            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                 // Create new TrafficItem object
                 TrafficItem newItem = new TrafficItem();
 
-                Element eElement = (Element) currentItem;
-                newItem.setTitle(eElement.getElementsByTagName("title").item(0).getTextContent());
-                newItem.setDescription(eElement.getElementsByTagName("description").item(0).getTextContent());
-                newItem.setLink(eElement.getElementsByTagName("link").item(0).getTextContent());
-                newItem.setDate(eElement.getElementsByTagName("pubDate").item(0).getTextContent());
-                newItem.setGeorss(eElement.getElementsByTagName("georss:point").item(0).getTextContent());
+                // Get currently focused item and get each tag
+                Element currentItem = (Element) currentNode;
+                newItem.setTitle(currentItem.getElementsByTagName("title").item(0).getTextContent());
+                newItem.setDescription(currentItem.getElementsByTagName("description").item(0).getTextContent());
+                newItem.setLink(currentItem.getElementsByTagName("link").item(0).getTextContent());
+                newItem.setDate(currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
+                newItem.setGeorss(currentItem.getElementsByTagName("georss:point").item(0).getTextContent());
 
-                testArray.add(newItem);
-                output += newItem.toString();
+                // Add current item to ArrayList
+                Items.add(newItem);
             }
         }
     }
@@ -88,22 +85,37 @@ public class RssParser {
 
 
     private Document loadXmlFromString(String xml) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = null;
             builder = factory.newDocumentBuilder();
             InputSource is = new InputSource(new StringReader(xml));
             return builder.parse(is);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    private Date toDate(String newBuildDate) {
+        try {
+            DateFormat fmt = DateFormat.getDateInstance(DateFormat.FULL, Locale.UK);
+            return fmt.parse(newBuildDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new Date();
+        }
+    }
+
+    //region Getters
+    public String getItems() {
+        String output = "";
+        for (TrafficItem item: Items) {
+            output += item.toString() + "\n\n";
+        }
+        return output;
+    }
+    //endregion
 
     private class RawRssFeed extends AsyncTask<URL, Void, String> {
 
@@ -124,8 +136,7 @@ public class RssParser {
 
         // Runs on main UI thread after the background task finishes
         protected void onPostExecute(String feed) {
-            parseRssData();
-
+            parseRssData(); // When the BG task of getting Raw Rss is finished, Start the parser.
         }
     }
 }

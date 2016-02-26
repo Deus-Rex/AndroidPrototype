@@ -1,5 +1,13 @@
 package com.example.trafficscotlandproto;
 
+//import org.joda.time.LocalDate;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by ryan on 25/02/16.
  */
@@ -9,9 +17,7 @@ public class TrafficItem {
     private String link;
     private Float geoRssX;
     private Float geoRssY;
-    private String author;
-    private String comments;
-    private String date; // Find a date datatype
+    private Date date; // Find a date datatype
 
     @Override
     public String toString(){
@@ -20,7 +26,7 @@ public class TrafficItem {
         output += "Description: " + getDescription() + "\n";
         output += "Date: " + getDate() + "\n";
         output += "Georss: " + getGeorss() + "\n";
-        output += "Link: " + getLink() + "\n\n";
+        output += "Link: " + getLink();
         return output;
     }
 
@@ -60,28 +66,19 @@ public class TrafficItem {
         this.geoRssY = Float.valueOf(coords[1]);
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
     public String getDate() {
-        return date;
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            return format.format(date);
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate(String newDate) {
+        try {
+            DateFormat fmt = DateFormat.getDateInstance(DateFormat.FULL, Locale.UK);
+            date = fmt.parse(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            date = new Date();
+        }
     }
     //endregion
 

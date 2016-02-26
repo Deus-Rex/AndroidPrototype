@@ -15,8 +15,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		output = (TextView) findViewById(R.id.txtOutput);
-//        new RssFeedHandler();
-
     }
 
     RssParser rssRoadworks = new RssParser("http://www.trafficscotland.org/rss/feeds/roadworks.aspx");
@@ -25,23 +23,8 @@ public class MainActivity extends Activity {
 
 
     // Buttons to show specific RSS feeds
-    public void showRoadworks(View view) {
+    public void showRoadworks(View view) {output.setText(rssRoadworks.getItems()); }
+    public void showPlanned(View view) { output.setText(rssPlanned.getItems()); }
+    public void showIncidents(View view) { output.setText(rssIncidents.getItems()); }
 
-        output.setText(rssRoadworks.output);
-
-    }
-    public void showPlanned(View view) { output.setText(rssPlanned.output); }
-    public void showIncidents(View view) { output.setText(rssIncidents.output); }
-
-    // Validate and show RSS feed
-    private void showRawFeed(String rssInput) {
-        if (rssInput == null) {
-            output.setText("Problem loading RSS feed.");
-            return;
-        }
-        else {
-            output.setText(rssInput);
-            return;
-        }
-    }
 }
