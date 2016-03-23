@@ -3,6 +3,8 @@ package com.example.trafficscotlandproto;
 import android.os.AsyncTask;
 
 import org.apache.commons.io.IOUtils;
+import org.joda.time.LocalDate;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -17,20 +19,21 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+// Ryan Sharp - S1517442
+
 public class RssParser {
 
-    Date currentBuildDate = null;
-    String rawRss;
-
-    ArrayList<TrafficItem> Items;
+    private Date currentBuildDate = null;
+    private String rawRss;
+    private ArrayList<TrafficItem> trafficItems;
 
     public RssParser(String inputRssUrl) {
         if (inputRssUrl == null) return;
@@ -43,8 +46,41 @@ public class RssParser {
         }
     }
 
+    public ArrayList<TrafficItem> getTrafficItems() {
+        return trafficItems;
+    }
+
+
+    public ArrayList<TrafficItem> getTrafficItems(LocalDate inputDate) {
+
+//        inputDate = inputDate.plusDays(2);
+
+        ArrayList<TrafficItem> filteredItems = new ArrayList<>();
+
+        for (int i = 0; i < trafficItems.size(); i++) {
+            TrafficItem currentItem = trafficItems.get(i);
+            LocalDate currentItemDate = currentItem.getDate();
+            Boolean isEqual = compareDates(inputDate, currentItemDate);
+            if(isEqual) {
+               filteredItems.add(currentItem);
+            }
+        }
+        return filteredItems;
+    }
+
+    public Integer getLength() {
+        return trafficItems.size();
+    }
+
+    private Boolean compareDates(LocalDate date1, LocalDate date2) {
+        if(date1.compareTo(date2) == 0) {
+           return true;
+        }
+        return false;
+    }
+
     private void parseRssData() {
-        Items = new ArrayList<>(); // reset arraylist
+        trafficItems = new ArrayList<>(); // reset arraylist
 
         // Convert RSS feed string to Document for parsing
         Document rssData = loadXmlFromString(rawRss);
@@ -77,12 +113,10 @@ public class RssParser {
                 newItem.setGeorss(currentItem.getElementsByTagName("georss:point").item(0).getTextContent());
 
                 // Add current item to ArrayList
-                Items.add(newItem);
+                trafficItems.add(newItem);
             }
         }
     }
-
-
 
     private Document loadXmlFromString(String xml) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -108,13 +142,13 @@ public class RssParser {
     }
 
     //region Getters
-    public String getItems() {
-        String output = "";
-        for (TrafficItem item: Items) {
-            output += item.toString() + "\n\n";
-        }
-        return output;
-    }
+//    public String getTrafficItems() {
+//        String output = "";
+//        for (TrafficItem item: trafficItems) {
+//            output += item.toString() + "\n\n";
+//        }
+//        return output;
+//    }
     //endregion
 
     private class RawRssFeed extends AsyncTask<URL, Void, String> {

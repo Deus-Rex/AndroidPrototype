@@ -9,9 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by ryan on 26/02/16.
- */
+// Ryan Sharp - S1517442
+
 public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
 
     public TrafficItemAdapter(Context context, ArrayList<TrafficItem> trafficItem) {
@@ -35,7 +34,7 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
         // Populate the data into the template view using the data object
         tvTitle.setText(item.getTitle());
         tvDescription.setText(item.getDescription());
-        tvDate.setText(item.getDate());
+        tvDate.setText(item.getDateString());
         tvLink.setText(item.getLink());
         tvCoord.setText(item.getGeorss());
         // Return the completed view to render on screen

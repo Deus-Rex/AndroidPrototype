@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Ryan Sharp - S1517442-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:columnCount="3"
+        android:columnCount="2"
         android:rowCount="5"
         android:layout_alignParentEnd="true">
 
@@ -103,7 +105,7 @@
             android:layout_width="220dip"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="long as heck description that goes on forever and ever and ever and hopefully wraps around but I doubt it will"
+            android:text="---"
             android:id="@+id/txtDescription"
             android:layout_row="1"
             android:layout_column="1"

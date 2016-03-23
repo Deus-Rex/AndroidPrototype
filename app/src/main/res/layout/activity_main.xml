@@ -1,10 +1,10 @@
+<!-- Ryan Sharp - S1517442-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
-
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -37,6 +37,13 @@
                 android:text="Roadwork"
                 android:id="@+id/button3"
                 android:onClick="showRoadworks"/>
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/imageButton"
+                android:src="#190404"
+                android:onClick="setDate"/>
         </LinearLayout>
 
         <TextView
@@ -49,6 +56,9 @@
         <ListView
             android:id="@+id/listTrafficView"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/list_item"
+            android:choiceMode="singleChoice"
+            style="@style/AppTheme" />
     </LinearLayout>
 </RelativeLayout>
