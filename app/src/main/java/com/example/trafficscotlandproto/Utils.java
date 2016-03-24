@@ -37,4 +37,12 @@ public class Utils {
             return dateOutput;
         }
     }
+
+    public static String brToNewLine(String input) {
+        String newLine = "\n"; // Set newline character
+        return input
+                .replaceAll("(<br\\s*\\/?>)+", newLine) // Regex to replace any type of <br/> with newline
+                .replaceAll("[\n]+", newLine)           // Regex to replace repeated newlines with one
+                .trim();                                // Remove whitespace before and after string
+    }
 }

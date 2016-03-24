@@ -135,6 +135,7 @@ public class MainActivity extends Activity {
     }
 
     private ArrayList<TrafficItem> getItems(RssParser trafficType, LocalDate date) {
+        if (trafficType == null) return null;
         ArrayList<TrafficItem> listOfItems;
         listOfItems = trafficType.getTrafficItems(selectedDate);
         setListView(listOfItems);
