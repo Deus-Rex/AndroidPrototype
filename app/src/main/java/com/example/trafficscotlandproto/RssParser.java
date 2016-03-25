@@ -33,7 +33,7 @@ public class RssParser {
 
     private Date currentBuildDate = null;
     private String rawRss;
-    private ArrayList<TrafficItem> trafficItems;
+    private ArrayList<TrafficItem> trafficItems = new ArrayList<>(); // Instantiated to avoid null before asynctask completes
 
     public RssParser(String inputRssUrl) {
         if (inputRssUrl == null) return;
@@ -52,9 +52,6 @@ public class RssParser {
 
 
     public ArrayList<TrafficItem> getTrafficItems(LocalDate inputDate) {
-
-//        inputDate = inputDate.plusDays(2);
-
         ArrayList<TrafficItem> filteredItems = new ArrayList<>();
 
         for (int i = 0; i < trafficItems.size(); i++) {
@@ -79,44 +76,7 @@ public class RssParser {
         return false;
     }
 
-    private void parseRssData() {
-        trafficItems = new ArrayList<>(); // reset arraylist
 
-        // Convert RSS feed string to Document for parsing
-        Document rssData = loadXmlFromString(rawRss);
-        if (rssData == null) return;
-        rssData.getDocumentElement().normalize();
-
-        // Get date from RSS feed, if it's the same as current, stop, otherwise set new date and continue
-        Date newBuildDate = toDate(rssData.getElementsByTagName("lastBuildDate").item(0).getTextContent());
-        if (newBuildDate == currentBuildDate) return;
-        currentBuildDate = newBuildDate;
-
-        // Split feed into individual items
-        NodeList rssFeedItems = rssData.getElementsByTagName("item");
-
-        // Parse each item for data
-        for (int i = 0; i < rssFeedItems.getLength(); i++) {
-            Node currentNode = rssFeedItems.item(i);
-
-            // Cycle through each item and extract data to data class
-            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-                // Create new TrafficItem object
-                TrafficItem newItem = new TrafficItem();
-
-                // Get currently focused item and get each tag
-                Element currentItem = (Element) currentNode;
-                newItem.setTitle(currentItem.getElementsByTagName("title").item(0).getTextContent());
-                newItem.setDescription(currentItem.getElementsByTagName("description").item(0).getTextContent());
-                newItem.setLink(currentItem.getElementsByTagName("link").item(0).getTextContent());
-                newItem.setDate(currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
-                newItem.setGeorss(currentItem.getElementsByTagName("georss:point").item(0).getTextContent());
-
-                // Add current item to ArrayList
-                trafficItems.add(newItem);
-            }
-        }
-    }
 
     private Document loadXmlFromString(String xml) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -165,12 +125,52 @@ public class RssParser {
                 rawRssFeed = null;
             }
             rawRss = rawRssFeed;
+            parseRssData();
             return rawRssFeed;
+        }
+
+        private void parseRssData() {
+            trafficItems = new ArrayList<>(); // reset arraylist
+
+            // Convert RSS feed string to Document for parsing
+            Document rssData = loadXmlFromString(rawRss);
+            if (rssData == null) return;
+            rssData.getDocumentElement().normalize();
+
+            // Get date from RSS feed, if it's the same as current, stop, otherwise set new date and continue
+            Date newBuildDate = toDate(rssData.getElementsByTagName("lastBuildDate").item(0).getTextContent());
+            if (newBuildDate == currentBuildDate) return;
+            currentBuildDate = newBuildDate;
+
+            // Split feed into individual items
+            NodeList rssFeedItems = rssData.getElementsByTagName("item");
+
+            // Parse each item for data
+            for (int i = 0; i < rssFeedItems.getLength(); i++) {
+                Node currentNode = rssFeedItems.item(i);
+
+                // Cycle through each item and extract data to data class
+                if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+                    // Create new TrafficItem object
+                    TrafficItem newItem = new TrafficItem();
+
+                    // Get currently focused item and get each tag
+                    Element currentItem = (Element) currentNode;
+                    newItem.setTitle(currentItem.getElementsByTagName("title").item(0).getTextContent());
+                    newItem.setDescription(currentItem.getElementsByTagName("description").item(0).getTextContent());
+                    newItem.setLink(currentItem.getElementsByTagName("link").item(0).getTextContent());
+                    newItem.setDate(currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
+                    newItem.setGeorss(currentItem.getElementsByTagName("georss:point").item(0).getTextContent());
+
+                    // Add current item to ArrayList
+                    trafficItems.add(newItem);
+                }
+            }
         }
 
         // Runs on main UI thread after the background task finishes
         protected void onPostExecute(String feed) {
-            parseRssData(); // When the BG task of getting Raw Rss is finished, Start the parser.
+            //parseRssData(); // When the BG task of getting Raw Rss is finished, Start the parser.
         }
     }
 }
