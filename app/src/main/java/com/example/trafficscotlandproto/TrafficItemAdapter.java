@@ -33,6 +33,8 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
         TextView tvDate = (TextView) convertView.findViewById(R.id.txtDate);
         TextView tvLink = (TextView) convertView.findViewById(R.id.txtLink);
         TextView tvCoord = (TextView) convertView.findViewById(R.id.txtCoord);
+        TextView tvStartDate = (TextView) convertView.findViewById(R.id.txtStartDate);
+        TextView tvEndDate = (TextView) convertView.findViewById(R.id.txtEndDate);
 
         // Populate the data into the template view using the data object
         tvTitle.setText(Utils.brToNewLine(item.getTitle()));
@@ -40,6 +42,28 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
         tvDate.setText(Utils.brToNewLine(item.getDateString()));
         tvLink.setText(Utils.brToNewLine(item.getLink()));
         tvCoord.setText(Utils.brToNewLine(item.getGeorss()));
+
+        if (item.getDescription() != "") {
+            tvDesc.setText(Utils.brToNewLine(item.getDescription()));
+        } else {
+            TextView tvDescLabel = (TextView) convertView.findViewById(R.id.txtDescriptionLabel);
+
+            tvDesc.setVisibility(View.GONE);
+            tvDescLabel.setVisibility(View.GONE);;
+        }
+
+        if (item.getStartDate() != null || item.getEndDate() != null) {
+            tvStartDate.setText(Utils.brToNewLine(item.getStartDateString()));
+            tvEndDate.setText(Utils.brToNewLine(item.getEndDateString()));
+        } else {
+            TextView tvStartDateLabel = (TextView) convertView.findViewById(R.id.txtStartDateLabel);
+            TextView tvEndDateLabel = (TextView) convertView.findViewById(R.id.txtEndDateLabel);
+
+            tvStartDate.setVisibility(View.GONE);
+            tvStartDateLabel.setVisibility(View.GONE);
+            tvEndDate.setVisibility(View.GONE);
+            tvEndDateLabel.setVisibility(View.GONE);
+        }
 
         // Return the completed view to render on screen
         return convertView;

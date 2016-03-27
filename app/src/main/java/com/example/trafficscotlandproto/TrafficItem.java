@@ -13,6 +13,10 @@ public class TrafficItem {
     private Float geoRssX;
     private Float geoRssY;
     private LocalDate date;
+    private LocalDate dateStart;
+    private LocalDate dateEnd;
+
+    public static String dateFormat = "yyyy-MM-dd";
 
     public TrafficItem(){
         
@@ -39,8 +43,26 @@ public class TrafficItem {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String desc) {
+
+        try {
+            String[] splitDesc = desc.split("<br />");
+            dateStart = Utils.ConvertDate(splitDesc[0].replace("Start Date: ", "").replace(" - 00:00", ""), dateFormat);
+            dateEnd = Utils.ConvertDate(splitDesc[1].replace("End Date: ", "").replace(" - 00:00", ""), dateFormat);
+
+            if (splitDesc.length > 2) this.description = splitDesc[2];
+            else this.description = "";
+
+
+        } catch(Exception e) {
+            dateStart = null;
+            dateEnd = null ;
+            this.description = desc;
+        }
+
+        //
+
+        //this.description = desc;
     }
 
     public String getLink() {
@@ -66,11 +88,35 @@ public class TrafficItem {
     }
 
     public String getDateString() {
-        return date.toString("dd/MM/yyyy");
+        return date.toString(dateFormat);
     }
 
     public void setDate(String newDate) {
-        date = Utils.ConvertDate(newDate);
+        date = Utils.ConvertDate(newDate, dateFormat);
+    }
+
+    public LocalDate getStartDate() {
+        return dateStart;
+    }
+
+    public String getStartDateString() {
+        return dateStart.toString(dateFormat);
+    }
+
+    public void setStartDate(String newDate) {
+        dateStart = Utils.ConvertDate(newDate, dateFormat);
+    }
+
+    public LocalDate getEndDate() {
+        return dateEnd;
+    }
+
+    public String getEndDateString() {
+        return dateEnd.toString(dateFormat);
+    }
+
+    public void setEndDate(String newDate) {
+        dateEnd = Utils.ConvertDate(newDate, dateFormat);
     }
     //endregion
 

@@ -13,7 +13,7 @@ import java.util.Locale;
  */
 public class Utils {
     // Convert String to LocalDate
-    public static LocalDate ConvertDate(String dateInput) {
+    public static LocalDate ConvertDate(String dateInput, String dateFormat) {
         LocalDate dateOutput = null;
 
         try {
@@ -22,7 +22,7 @@ public class Utils {
             Date tmpDate = fmt.parse(dateInput);
 
             // Convert the Date to a LocalDate
-            dateOutput = LocalDate.parse( new SimpleDateFormat("yyyy-MM-dd").format(tmpDate));
+            dateOutput = LocalDate.parse( new SimpleDateFormat(dateFormat).format(tmpDate));
         } catch (ParseException e) {
             e.printStackTrace();
             dateOutput = new LocalDate(); // TODO: Test this to check if the timestamps from the RSS could break this
@@ -31,7 +31,7 @@ public class Utils {
             Date tmpDate = fmt.parse(dateInput);
 
             // Convert the Date to a LocalDate
-            dateOutput = LocalDate.parse( new SimpleDateFormat("yyyy-MM-dd").format(tmpDate));
+            dateOutput = LocalDate.parse( new SimpleDateFormat(dateFormat).format(tmpDate));
 
         } finally {
             return dateOutput;

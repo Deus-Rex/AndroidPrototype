@@ -101,16 +101,6 @@ public class RssParser {
         }
     }
 
-    //region Getters
-//    public String getTrafficItems() {
-//        String output = "";
-//        for (TrafficItem item: trafficItems) {
-//            output += item.toString() + "\n\n";
-//        }
-//        return output;
-//    }
-    //endregion
-
     private class RawRssFeed extends AsyncTask<URL, Void, String> {
 
         // Runs in background to get the RSS feed
@@ -156,8 +146,11 @@ public class RssParser {
 
                     // Get currently focused item and get each tag
                     Element currentItem = (Element) currentNode;
+
+                    String itemDesc = currentItem.getElementsByTagName("description").item(0).getTextContent();
+
                     newItem.setTitle(currentItem.getElementsByTagName("title").item(0).getTextContent());
-                    newItem.setDescription(currentItem.getElementsByTagName("description").item(0).getTextContent());
+                    newItem.setDescription(itemDesc);
                     newItem.setLink(currentItem.getElementsByTagName("link").item(0).getTextContent());
                     newItem.setDate(currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
                     newItem.setGeorss(currentItem.getElementsByTagName("georss:point").item(0).getTextContent());

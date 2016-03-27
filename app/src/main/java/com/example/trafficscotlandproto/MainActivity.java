@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
     private RssParser rssPlanned = new RssParser("http://trafficscotland.org/rss/feeds/plannedroadworks.aspx");
     private RssParser rssIncidents = new RssParser("http://trafficscotland.org/rss/feeds/currentincidents.aspx");
 
-    private LocalDate selectedDate;
+    public static LocalDate selectedDate;
 
     private DatePicker datePicker;
     private Calendar calendar;
@@ -93,7 +93,8 @@ public class MainActivity extends Activity {
         public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
             // TODO Auto-generated method stub
             // arg1 = year
-            // arg2 = month
+            // arg2 = monthg
+
             // arg3 = day
             showDate(arg1, arg2+1, arg3);
         }
@@ -108,25 +109,26 @@ public class MainActivity extends Activity {
         month = format.format(inputMonth);
 
         selectedDate = Utils.ConvertDate(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year).toString());
+                .append(month).append("/").append(year).toString(), TrafficItem.dateFormat);
     }
 
     // Buttons to show specific RSS feeds
     public void showRoadworks(View view) {
         header.setText("Current Roadworks");
-        ArrayList<TrafficItem> listOfItems = getItems(rssRoadworks, selectedDate);
+        getItems(rssRoadworks, selectedDate);
     }
 
     public void showPlanned(View view) {
         header.setText("Planned Roadworks");
-        ArrayList<TrafficItem> listOfItems = getItems(rssPlanned, selectedDate);
+        getItems(rssPlanned, selectedDate);
     }
 
     public void showIncidents(View view) {
         header.setText("Incidents");
-        ArrayList<TrafficItem> listOfItems = getItems(rssIncidents, selectedDate);
+        getItems(rssIncidents, selectedDate);
     }
 
+    // Shows and returns all items from a feed
     private ArrayList<TrafficItem> getItems(RssParser trafficType) {
         ArrayList<TrafficItem> listOfItems;
         listOfItems = trafficType.getTrafficItems();
@@ -134,6 +136,7 @@ public class MainActivity extends Activity {
         return listOfItems;
     }
 
+    // Shows and returns items from a specific date from a feed
     private ArrayList<TrafficItem> getItems(RssParser trafficType, LocalDate date) {
         if (trafficType == null) return null;
         ArrayList<TrafficItem> listOfItems;
