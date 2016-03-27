@@ -18,11 +18,10 @@ public class TrafficItem {
 
     public static String dateFormat = "yyyy-MM-dd";
 
-    public TrafficItem(){
-        
-    }
+    public TrafficItem() {}
 
     public TrafficItem(String newTitle, String newDescription, String newLink, String newCoord, String newDate){
+        // Constructor to create item
         setTitle(newTitle);
         setDescription(newDescription);
         setLink(newLink);
@@ -44,25 +43,23 @@ public class TrafficItem {
     }
 
     public void setDescription(String desc) {
-
         try {
+            // Split spring with each break tag
             String[] splitDesc = desc.split("<br />");
+
+            // Parse start/end dates
             dateStart = Utils.ConvertDate(splitDesc[0].replace("Start Date: ", "").replace(" - 00:00", ""), dateFormat);
             dateEnd = Utils.ConvertDate(splitDesc[1].replace("End Date: ", "").replace(" - 00:00", ""), dateFormat);
 
+            // Set description if there is any
             if (splitDesc.length > 2) this.description = splitDesc[2];
             else this.description = "";
-
-
         } catch(Exception e) {
+            // If parsing failed, assume there are no dates
             dateStart = null;
             dateEnd = null ;
             this.description = desc;
         }
-
-        //
-
-        //this.description = desc;
     }
 
     public String getLink() {
@@ -78,6 +75,7 @@ public class TrafficItem {
     }
 
     public void setGeorss(String georss) {
+        // Split the coordinates into X and Y, for Google Map feature in future
         String coords [] = georss.split(" ");
         this.geoRssX = Float.valueOf(coords[0]);
         this.geoRssY = Float.valueOf(coords[1]);

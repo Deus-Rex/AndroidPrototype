@@ -56,8 +56,7 @@ public class RssParser {
 
         for (int i = 0; i < trafficItems.size(); i++) {
             TrafficItem currentItem = trafficItems.get(i);
-            LocalDate currentItemDate = currentItem.getDate();
-            Boolean isEqual = compareDates(inputDate, currentItemDate);
+            Boolean isEqual = compareDates(inputDate, currentItem.getStartDate(), currentItem.getEndDate());
             if(isEqual) {
                filteredItems.add(currentItem);
             }
@@ -69,8 +68,8 @@ public class RssParser {
         return trafficItems.size();
     }
 
-    private Boolean compareDates(LocalDate date1, LocalDate date2) {
-        if(date1.compareTo(date2) == 0) {
+    private Boolean compareDates(LocalDate dateSearch, LocalDate dateStart, LocalDate dateEnd) {
+        if(dateSearch.compareTo(dateStart) > 0 && dateSearch.compareTo(dateEnd) < 0) {
            return true;
         }
         return false;

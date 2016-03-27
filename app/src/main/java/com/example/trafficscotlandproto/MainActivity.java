@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
 
     public void showIncidents(View view) {
         header.setText("Incidents");
-        getItems(rssIncidents, selectedDate);
+        getItems(rssIncidents);
     }
 
     // Shows and returns all items from a feed
@@ -133,6 +133,7 @@ public class MainActivity extends Activity {
         ArrayList<TrafficItem> listOfItems;
         listOfItems = trafficType.getTrafficItems();
         setListView(listOfItems);
+        header.setText(header.getText() + " [" + listOfItems.size() + "]");
         return listOfItems;
     }
 
@@ -142,7 +143,7 @@ public class MainActivity extends Activity {
         ArrayList<TrafficItem> listOfItems;
         listOfItems = trafficType.getTrafficItems(selectedDate);
         setListView(listOfItems);
-        header.setText(header.getText() + " " + listOfItems.size() + "/" + trafficType.getLength());
+        header.setText(header.getText() + " [" + listOfItems.size() + "/" + trafficType.getLength() + "]");
         return listOfItems;
     }
 
