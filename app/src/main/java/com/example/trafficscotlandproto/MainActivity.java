@@ -56,6 +56,15 @@ public class MainActivity extends FragmentActivity {
         rssPlanned = new RssParser(getString(R.string.rssPlanned), this);
         rssIncidents = new RssParser(getString(R.string.rssIncidents), this);
 
+        final int abTitleId = getResources().getIdentifier("action_bar_title", "id", "android");
+        findViewById(abTitleId).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                showToast("header clicked");
+            }
+        });
+
         // When items from ListView are clicked, show a Toast with the title of the item
         trafficListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
