@@ -140,16 +140,18 @@ public class MainActivity extends FragmentActivity {
         actionBar.selectTab(actionBar.getSelectedTab());
     }
 
-    private void setListView(ArrayList<TrafficItem> inputTrafficList) {
+    private void setListView(RssParser trafficList, ArrayList<TrafficItem> inputTrafficListItems) {
         // Ensure the array is not null
-        if (inputTrafficList == null) {
+        if (inputTrafficListItems == null) {
             showToast(getString(R.string.rssLoadingMessage));
             return;
         }
         // Creates an adapter to convert the array to a list view
-        TrafficItemAdapter adapter = new TrafficItemAdapter(this, inputTrafficList);
+        TrafficItemAdapter adapter = new TrafficItemAdapter(this, inputTrafficListItems);
 
-        if (inputTrafficList.size() == 0) header.setText("Loading...");
+        if (inputTrafficListItems.size() == 0) header.setText(R.string.msgLoading);
+        // If items couldn't be parsed, then there are no items to show
+        if (!trafficList.isParsed) header.setText(R.string.msgNoItems);
 
         // Attach the adapter to a ListView
         trafficListView.setAdapter(adapter);
@@ -161,6 +163,9 @@ public class MainActivity extends FragmentActivity {
 
         ArrayList<TrafficItem> listOfItems;
 
+        // If selected date is todays, then show all items.
+        // NOTE TO SELF: This is because current roadworks will always be today anyway, and planned
+        // will always be in the future. No point in having a complex method to determine it.
         Boolean filterActive = selectedDate.compareTo(new LocalDate()) != 0;
 
         if (canHaveFilter && filterActive) {
@@ -174,7 +179,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         // Get and display the traffic items based on the date filter
-        setListView(listOfItems);
+        setListView(trafficType, listOfItems);
 
         // Set header to show feed type and the number of displayed items compared to total items
         return listOfItems;

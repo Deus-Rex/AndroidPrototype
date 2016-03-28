@@ -28,5 +28,7 @@
     <string name="listView_EndDate">End</string>
     <string name="listView_Description">Info</string>
     <string name="listView_Temporary">---</string>
+    <string name="msgLoading">Loading...</string>
+    <string name="msgNoItems">No Traffic Reports</string>
 
 </resources>
