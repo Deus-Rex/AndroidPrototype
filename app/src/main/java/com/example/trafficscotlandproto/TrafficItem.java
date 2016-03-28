@@ -18,10 +18,11 @@ public class TrafficItem {
 
     public static String dateFormat = "yyyy-MM-dd";
 
+    // Blank constructor to allow class to be created and info set separately
     public TrafficItem() {}
 
+    // Constructor to create item
     public TrafficItem(String newTitle, String newDescription, String newLink, String newCoord, String newDate){
-        // Constructor to create item
         setTitle(newTitle);
         setDescription(newDescription);
         setLink(newLink);
@@ -30,6 +31,8 @@ public class TrafficItem {
     }
 
     //region Getters and Setters
+
+    // Title
     public String getTitle() {
         return title;
     }
@@ -38,10 +41,12 @@ public class TrafficItem {
         this.title = title;
     }
 
+    // Description
     public String getDescription() {
         return description;
     }
 
+    // Set description and also parse any dates from it to populate Start/End Dates
     public void setDescription(String desc) {
         try {
             // Split spring with each break tag
@@ -62,6 +67,7 @@ public class TrafficItem {
         }
     }
 
+    // Item URL
     public String getLink() {
         return link;
     }
@@ -70,6 +76,7 @@ public class TrafficItem {
         this.link = link;
     }
 
+    // Coordinates
     public String getGeorss() {
         return geoRssX.toString() + ", " + geoRssY.toString();
     }
@@ -81,6 +88,7 @@ public class TrafficItem {
         this.geoRssY = Float.valueOf(coords[1]);
     }
 
+    // Publish date
     public LocalDate getDate() {
         return date;
     }
@@ -93,6 +101,7 @@ public class TrafficItem {
         date = Utils.ConvertDate(newDate, dateFormat);
     }
 
+    // Start date
     public LocalDate getStartDate() {
         return dateStart;
     }
@@ -105,6 +114,7 @@ public class TrafficItem {
         dateStart = Utils.ConvertDate(newDate, dateFormat);
     }
 
+    // End Date
     public LocalDate getEndDate() {
         return dateEnd;
     }

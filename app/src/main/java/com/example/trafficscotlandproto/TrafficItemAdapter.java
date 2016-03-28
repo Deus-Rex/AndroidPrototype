@@ -43,23 +43,23 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
         tvLink.setText(Utils.brToNewLine(item.getLink()));
         tvCoord.setText(Utils.brToNewLine(item.getGeorss()));
 
+        // Set description if it exists, otherwise hide the labels
         if (item.getDescription() != "") {
             tvDesc.setText(Utils.brToNewLine(item.getDescription()));
         } else {
             TextView tvDescLabel = (TextView) convertView.findViewById(R.id.txtDescriptionLabel);
-
-            tvDesc.setVisibility(View.GONE);
+            tvDesc.setVisibility(View.GONE); // Set visibility to off
             tvDescLabel.setVisibility(View.GONE);;
         }
 
+        // Set the start/end date only if they exist, otherwise hide the labels
         if (item.getStartDate() != null || item.getEndDate() != null) {
             tvStartDate.setText(Utils.brToNewLine(item.getStartDateString()));
             tvEndDate.setText(Utils.brToNewLine(item.getEndDateString()));
         } else {
             TextView tvStartDateLabel = (TextView) convertView.findViewById(R.id.txtStartDateLabel);
             TextView tvEndDateLabel = (TextView) convertView.findViewById(R.id.txtEndDateLabel);
-
-            tvStartDate.setVisibility(View.GONE);
+            tvStartDate.setVisibility(View.GONE); // Set visibility to off
             tvStartDateLabel.setVisibility(View.GONE);
             tvEndDate.setVisibility(View.GONE);
             tvEndDateLabel.setVisibility(View.GONE);

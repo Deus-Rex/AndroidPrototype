@@ -20,21 +20,21 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Incident"
+                android:text="@string/button_Incident"
                 android:id="@+id/button"
                 android:onClick="showIncidents"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Planned"
+                android:text="@string/button_Planned"
                 android:id="@+id/button2"
                 android:onClick="showPlanned"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Roadwork"
+                android:text="@string/button_Roadworks"
                 android:id="@+id/button3"
                 android:onClick="showRoadworks"/>
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Click a button to display feed"
+            android:text="@string/default_Heading"
             android:id="@+id/txtHeader" />
 
         <ListView

@@ -2,6 +2,29 @@
 <resources>
 
     <string name="app_name">Ryan Sharp - S1517442</string>
-    <string name="hello_world">Hello world!</string>
+
+    <!-- Traffic Types -->
+    <string name="CurrentRoadworks">Current Roadworks</string>
+    <string name="PlannedRoadworks">Planned Roadworks</string>
+    <string name="Incidents">Incidents</string>
+
+    <!-- RSS Feed URLs -->
+    <string name="rssRoadworks">http://www.trafficscotland.org/rss/feeds/roadworks.aspx</string>
+    <string name="rssPlanned">http://trafficscotland.org/rss/feeds/plannedroadworks.aspx</string>
+    <string name="rssIncidents">http://trafficscotland.org/rss/feeds/currentincidents.aspx</string>
+
+    <string name="rssLoadingMessage">RSS Feed Still Loading</string>
+    <string name="button_Incident">Incident</string>
+    <string name="button_Planned">Planned</string>
+    <string name="button_Roadworks">Roadwork</string>
+    <string name="default_Heading">Click a button to display feed</string>
+    <string name="listview_Title">Title</string>
+    <string name="listView_Link">Link</string>
+    <string name="listView_Coord">Coord</string>
+    <string name="listView_Date">Date</string>
+    <string name="listView_StartDate">Start</string>
+    <string name="listView_EndDate">End</string>
+    <string name="listView_Description">Info</string>
+    <string name="listView_Temporary">---</string>
 
 </resources>

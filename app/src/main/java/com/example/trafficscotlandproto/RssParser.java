@@ -31,73 +31,87 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class RssParser {
 
-    private Date currentBuildDate = null;
-    private String rawRss;
-    private ArrayList<TrafficItem> trafficItems = new ArrayList<>(); // Instantiated to avoid null before asynctask completes
+    // Instantiated to avoid null before asynctask completes
+    private ArrayList<TrafficItem> trafficItems = new ArrayList<>();
 
+    private Date currentBuildDate = null; // Date of RSS build
+
+    // Constructor - setup the feed using the input string
     public RssParser(String inputRssUrl) {
-        if (inputRssUrl == null) return;
+        if (inputRssUrl == null) return; // Return if no rss string exists
 
         try {
-            URL rssURL = new URL(inputRssUrl);
-            new RawRssFeed().execute(rssURL);
+            URL rssURL = new URL(inputRssUrl); // Create URL from string
+            new RawRssFeed().execute(rssURL); // Start the RSS AsyncTask
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
 
+    // Return all items
     public ArrayList<TrafficItem> getTrafficItems() {
         return trafficItems;
     }
 
-
+    // Return items based on date filter criteria
     public ArrayList<TrafficItem> getTrafficItems(LocalDate inputDate) {
-        ArrayList<TrafficItem> filteredItems = new ArrayList<>();
+        ArrayList<TrafficItem> filteredItems = new ArrayList<>(); // Reset List of items
 
+        // Loop through each traffic item to determine if it meets date filter criteria
         for (int i = 0; i < trafficItems.size(); i++) {
             TrafficItem currentItem = trafficItems.get(i);
+
+            // If date is between the filter criteria, add to filtered item list
             Boolean isEqual = compareDates(inputDate, currentItem.getStartDate(), currentItem.getEndDate());
             if(isEqual) {
                filteredItems.add(currentItem);
             }
         }
+
         return filteredItems;
     }
 
-    public Integer getLength() {
-        return trafficItems.size();
-    }
 
+    // Check if date is between two other dates
     private Boolean compareDates(LocalDate dateSearch, LocalDate dateStart, LocalDate dateEnd) {
-        if(dateSearch.compareTo(dateStart) > 0 && dateSearch.compareTo(dateEnd) < 0) {
-           return true;
-        }
-        return false;
+        // > 0 means after dateStart, < 0 means before dateEnd. = 0 would mean they are the same
+        // if selected date is after start date AND before end date
+        return dateSearch.compareTo(dateStart) > 0 && dateSearch.compareTo(dateEnd) < 0;
     }
 
-
-
-    private Document loadXmlFromString(String xml) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
+    // Converts String to a document able to be parsed as XML
+    private Document loadXmlFromString(String stringXML) {
+        // Return document from parsed string, otherwise return null
         try {
-            builder = factory.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(xml));
-            return builder.parse(is);
+            // Create document
+            DocumentBuilder dBuilder;
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            dBuilder = dbFactory.newDocumentBuilder();
+
+            // Parse document from string
+            InputSource iSource = new InputSource(new StringReader(stringXML));
+            return dBuilder.parse(iSource);
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    // Store the RSS feeds build date, to avoid reparsing the same content
     private Date toDate(String newBuildDate) {
         try {
+            // parse the date from string
             DateFormat fmt = DateFormat.getDateInstance(DateFormat.FULL, Locale.UK);
             return fmt.parse(newBuildDate);
         } catch (ParseException e) {
+            // if RSS build date string is ever corrupt, return todays date instead
             e.printStackTrace();
             return new Date();
         }
+    }
+
+    public Integer getLength() {
+        return trafficItems.size();
     }
 
     private class RawRssFeed extends AsyncTask<URL, Void, String> {
@@ -106,6 +120,7 @@ public class RssParser {
         protected String doInBackground(URL... rssFeedUrl) {
             if (rssFeedUrl == null) return null;
             String rawRssFeed;
+
             // Get and return RSS feed using Apaches IOUtils library
             try {
                 rawRssFeed = IOUtils.toString(rssFeedUrl[0], (Charset) null);
@@ -113,12 +128,15 @@ public class RssParser {
                 e.printStackTrace();
                 rawRssFeed = null;
             }
-            rawRss = rawRssFeed;
-            parseRssData();
+
+            // Start the parser
+            parseRssData(rawRssFeed);
+
             return rawRssFeed;
         }
 
-        private void parseRssData() {
+        // Parse the rss feed
+        private void parseRssData(String rawRss) {
             trafficItems = new ArrayList<>(); // reset arraylist
 
             // Convert RSS feed string to Document for parsing
@@ -146,10 +164,9 @@ public class RssParser {
                     // Get currently focused item and get each tag
                     Element currentItem = (Element) currentNode;
 
-                    String itemDesc = currentItem.getElementsByTagName("description").item(0).getTextContent();
-
+                    // Set item info from feed
                     newItem.setTitle(currentItem.getElementsByTagName("title").item(0).getTextContent());
-                    newItem.setDescription(itemDesc);
+                    newItem.setDescription(currentItem.getElementsByTagName("description").item(0).getTextContent());
                     newItem.setLink(currentItem.getElementsByTagName("link").item(0).getTextContent());
                     newItem.setDate(currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
                     newItem.setGeorss(currentItem.getElementsByTagName("georss:point").item(0).getTextContent());
@@ -162,7 +179,7 @@ public class RssParser {
 
         // Runs on main UI thread after the background task finishes
         protected void onPostExecute(String feed) {
-            //parseRssData(); // When the BG task of getting Raw Rss is finished, Start the parser.
+
         }
     }
 }
