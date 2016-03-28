@@ -2,6 +2,7 @@ package com.example.trafficscotlandproto;
 
 //import org.joda.time.LocalDate;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 // Ryan Sharp - S1517442
@@ -15,6 +16,7 @@ public class TrafficItem {
     private LocalDate date;
     private LocalDate dateStart;
     private LocalDate dateEnd;
+    private int trafficProgress;
 
     public static String dateFormat = "yyyy-MM-dd";
 
@@ -56,6 +58,10 @@ public class TrafficItem {
             dateStart = Utils.ConvertDate(splitDesc[0].replace("Start Date: ", "").replace(" - 00:00", ""), dateFormat);
             dateEnd = Utils.ConvertDate(splitDesc[1].replace("End Date: ", "").replace(" - 00:00", ""), dateFormat);
 
+            double daysBetweenStartNow = Days.daysBetween(dateStart, new LocalDate()).getDays();
+            double daysBetweenStartEnd = Days.daysBetween(dateStart, dateEnd).getDays();
+            trafficProgress = (int) ((daysBetweenStartNow / daysBetweenStartEnd) * 100d);
+
             // Set description if there is any
             if (splitDesc.length > 2) this.description = splitDesc[2];
             else this.description = "";
@@ -87,6 +93,9 @@ public class TrafficItem {
         this.geoRssX = Float.valueOf(coords[0]);
         this.geoRssY = Float.valueOf(coords[1]);
     }
+
+    // Progress
+    public int getProgress() {return trafficProgress; }
 
     // Publish date
     public LocalDate getDate() {
