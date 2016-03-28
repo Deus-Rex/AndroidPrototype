@@ -26,6 +26,8 @@ import java.util.Calendar;
 
 public class MainActivity extends FragmentActivity {
 
+    public static TrafficItem clickedItem;
+
     private TextView header;
     private ListView trafficListView;
     private Toast currentToast;
@@ -58,9 +60,12 @@ public class MainActivity extends FragmentActivity {
         trafficListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TrafficItem clickedItem = (TrafficItem) parent.getItemAtPosition(position);
+                clickedItem = (TrafficItem) parent.getItemAtPosition(position);
                 String output = "You clicked on: " + clickedItem.getTitle();
                 showToast(output);
+
+                ItemInfoFragment newDialogTest = new ItemInfoFragment();
+                newDialogTest.show(getSupportFragmentManager(), "NoticeDialogFragment");
             }
         });
 
