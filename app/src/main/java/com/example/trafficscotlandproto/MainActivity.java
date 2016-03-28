@@ -1,9 +1,14 @@
 package com.example.trafficscotlandproto;
 
-import android.app.Activity;
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
@@ -19,7 +24,7 @@ import java.util.Calendar;
 
 // Ryan Sharp - S1517442
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     private TextView header;
     private ListView trafficListView;
@@ -33,15 +38,18 @@ public class MainActivity extends Activity {
     private int datePickerID = 999;
     private int year, month, day;
 
-    @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+    private ActionBar actionBar;
+    private ActionBar.TabListener tabListener;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Setup feeds, action bar and views
+        actionBar = getActionBar();
         header = (TextView) findViewById(R.id.txtHeader);
         trafficListView = (ListView) findViewById(R.id.listTrafficView);
-
-        // Setup the RSS feeds
         rssRoadworks = new RssParser(getString(R.string.rssRoadworks));
         rssPlanned = new RssParser(getString(R.string.rssPlanned));
         rssIncidents = new RssParser(getString(R.string.rssIncidents));
@@ -56,12 +64,80 @@ public class MainActivity extends Activity {
             }
         });
 
-        // Prepare Date Picker by setting up current date
-        Calendar calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        showDate(year, month + 1, day);
+        setupDatePicker();
+        setupTabs();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.btnSelectDate:
+                showDialog(datePickerID);
+                break;
+            case R.id.btnRefresh:
+                refreshTabs();
+                break;
+            case R.id.btnResetDate:
+                setupDatePicker();
+                break;
+        }
+        return true;
+    }
+
+    private void setupTabs() {
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS); // Add tabs to navbar
+
+        // Create a tab listener that is called when tabs are changed
+        tabListener = new ActionBar.TabListener() {
+            @Override
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                setTab(tab);
+            }
+
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {}
+
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                setTab(tab);
+            }
+
+            private void setTab(ActionBar.Tab tab) {
+                String currentTab = tab.getText().toString();
+                header.setText(currentTab);
+
+                switch (currentTab) {
+                    case "Incident":
+                        header.setText(R.string.Incidents);
+                        getItems(rssIncidents, false);
+                        break;
+                    case "Planned" :
+                        header.setText(R.string.PlannedRoadworks);
+                        getItems(rssPlanned, true);
+                        break;
+                    case "Roadwork" :
+                        header.setText(R.string.CurrentRoadworks);
+                        getItems(rssRoadworks, true);
+                        break;
+                    default : break;
+                }
+            }
+        };
+
+        actionBar.addTab(actionBar.newTab().setText(R.string.button_Incident).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(R.string.button_Planned).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(R.string.button_Roadworks).setTabListener(tabListener));
+    }
+
+    private void refreshTabs() {
+        actionBar.selectTab(actionBar.getSelectedTab());
     }
 
     private void setListView(ArrayList<TrafficItem> inputTrafficList) {
@@ -77,42 +153,59 @@ public class MainActivity extends Activity {
         trafficListView.setAdapter(adapter);
     }
 
-    // Shows and returns all items from a feed
-    private ArrayList<TrafficItem> getItems(RssParser trafficType) {
-        if (trafficType == null) return null;
-
-        // Get and display the traffic items
-        ArrayList<TrafficItem> listOfItems = trafficType.getTrafficItems();
-        setListView(listOfItems);
-
-        // Set header to show feed type and number of items
-        header.setText(String.format("%s [%d]", header.getText(), listOfItems.size()));
-        return listOfItems;
-    }
+//    // Shows and returns all items from a feed
+//    private ArrayList<TrafficItem> getItems(RssParser trafficType) {
+//        if (trafficType == null) return null;
+//
+//        // Get and display the traffic items
+//        ArrayList<TrafficItem> listOfItems = trafficType.getTrafficItems();
+//        setListView(listOfItems);
+//
+//        // Set header to show feed type and number of items
+//        header.setText(String.format("%s [%d]", header.getText(), listOfItems.size()));
+//        return listOfItems;
+//    }
 
     // Shows and returns items from a specific date from a feed
-    private ArrayList<TrafficItem> getItems(RssParser trafficType, LocalDate date) {
+    private ArrayList<TrafficItem> getItems(RssParser trafficType, Boolean canHaveFilter) {
         if (trafficType == null) return null;
 
+        ArrayList<TrafficItem> listOfItems;
+
+        Boolean filterActive = selectedDate.compareTo(new LocalDate()) != 0;
+
+        if (canHaveFilter && filterActive) {
+            // If filter is active and items can be filtered, send filter criteria
+            listOfItems = trafficType.getTrafficItems(selectedDate);
+            header.setText(String.format("%s [%d/%d]", header.getText(), listOfItems.size(), trafficType.getLength()));
+        } else {
+            // Else just get all of the items
+            listOfItems = trafficType.getTrafficItems();
+            header.setText(String.format("%s [%d]", header.getText(), listOfItems.size()));
+        }
+
         // Get and display the traffic items based on the date filter
-        ArrayList<TrafficItem> listOfItems = trafficType.getTrafficItems(date);
         setListView(listOfItems);
 
         // Set header to show feed type and the number of displayed items compared to total items
-        header.setText(String.format("%s [%d/%d]", header.getText(), listOfItems.size(), trafficType.getLength()));
         return listOfItems;
     }
 
     // Show a toast message easier and more robustly
     private void showToast(String toastText) {
-        if (currentToast != null) currentToast.cancel(); // Immediately closes open toasts to avoid delay and spam
+        if (currentToast != null)
+            currentToast.cancel(); // Immediately closes open toasts to avoid delay and spam
         currentToast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT); // Create Toast object
         currentToast.show();
     }
 
-    // Show the Date Picker dialog
-    public void setDate(View view) {
-        showDialog(datePickerID);
+    private void setupDatePicker() {
+        // Prepare Date Picker by setting up current date
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        showDate(year, month + 1, day);
     }
 
     @Override // Show the Date Picker
@@ -127,7 +220,7 @@ public class MainActivity extends Activity {
         @Override
         public void onDateSet(DatePicker datePickerView, int inputYear, int inputMonth, int inputDay) {
             // When date picker has new date selected, set new date
-            showDate(inputYear, inputMonth+1, inputDay);
+            showDate(inputYear, inputMonth + 1, inputDay);
         }
     };
 
@@ -140,21 +233,6 @@ public class MainActivity extends Activity {
 
         // Create date using string, convert to LocalDate then update selectedDate
         selectedDate = Utils.ConvertDate(day + "/" + month + "/" + year, TrafficItem.dateFormat);
-    }
-
-    // Buttons to show specific RSS feeds
-    public void showRoadworks(View view) {
-        header.setText(R.string.CurrentRoadworks);
-        getItems(rssRoadworks, selectedDate);
-    }
-
-    public void showPlanned(View view) {
-        header.setText(R.string.PlannedRoadworks);
-        getItems(rssPlanned, selectedDate);
-    }
-
-    public void showIncidents(View view) {
-        header.setText(R.string.Incidents);
-        getItems(rssIncidents);
+        refreshTabs();
     }
 }

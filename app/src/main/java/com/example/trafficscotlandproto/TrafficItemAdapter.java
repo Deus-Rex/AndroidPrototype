@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.joda.time.Days;
+
 import java.util.ArrayList;
 
 // Ryan Sharp - S1517442
@@ -34,6 +36,7 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
         TextView tvTitle = (TextView) convertView.findViewById(R.id.txtTitle);
         TextView tvDesc = (TextView) convertView.findViewById(R.id.txtDescription);
         TextView tvDate = (TextView) convertView.findViewById(R.id.txtDate);
+        TextView tvDateLabel = (TextView) convertView.findViewById(R.id.txtDateLabel);
         TextView tvLink = (TextView) convertView.findViewById(R.id.txtLink);
         TextView tvCoord = (TextView) convertView.findViewById(R.id.txtCoord);
         TextView tvStartDate = (TextView) convertView.findViewById(R.id.txtStartDate);
@@ -62,39 +65,44 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
 
         // Set the start/end date only if they exist, otherwise hide the labels
         if (item.getStartDate() != null || item.getEndDate() != null) {
+            tvDate.setVisibility(View.GONE);
+            tvDateLabel.setVisibility(View.GONE);
+
             tvStartDate.setText(Utils.brToNewLine(item.getStartDateString()));
             tvEndDate.setText(Utils.brToNewLine(item.getEndDateString()));
 
             // Set traffic progress
             pbDateProgress.setProgress((int) item.getProgress());
 
+
+            int length = Days.daysBetween(item.getStartDate(), item.getEndDate()).getDays();
             double progress = item.getProgress();
             int progressColour;
 
-            // Get colour depending on percentage of progress
-            if (progress < 25) progressColour = Color.parseColor("#d22a00");        // Red
-            else if (progress < 50) progressColour = Color.parseColor("#df9d00");   // Orange
-            else if (progress < 75) progressColour = Color.parseColor("#dfd500");   // Yellow
-            else progressColour = Color.parseColor("#78bd00");                      // Green
+            // Get colour depending on percentage of progress and length
+            if (length < 3 || progress > 95) progressColour =  Color.parseColor("#78bd00");     // Green
+            else if (length < 7 || progress > 80) progressColour = Color.parseColor("#dfd500"); // Yellow
+            else if (length < 14) progressColour = Color.parseColor("#df9d00");                 // Orange
+            else progressColour = Color.parseColor("#d22a00");                                  // Red
 
             // Set progress bar colour
             pbDateProgress.getProgressDrawable().setColorFilter(
                     progressColour, android.graphics.PorterDuff.Mode.SRC_IN);
 
-            // Set item highlight colour
+            // Set item feed_item_highlight colour
             gdHighlight.setColor(progressColour);
 
         } else {
-            TextView tvStartDateLabel = (TextView) convertView.findViewById(R.id.txtStartDateLabel);
             TextView tvEndDateLabel = (TextView) convertView.findViewById(R.id.txtEndDateLabel);
             tvStartDate.setVisibility(View.GONE); // Set visibility to off
-            tvStartDateLabel.setVisibility(View.GONE);
             tvEndDate.setVisibility(View.GONE);
             tvEndDateLabel.setVisibility(View.GONE);
             pbDateProgress.setVisibility(View.GONE);
-//            viewHighlight.setVisibility(View.GONE);
 
-            // Set item highlight colour
+            // Show published date
+            tvDate.setText(item.getDateString());
+
+            // Set item feed_item_highlight colour
             gdHighlight.setColor(Color.parseColor("#df9d00"));      // Orange
         }
 

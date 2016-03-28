@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/btnResetDate"
+        android:title="Show All"/>
+
+    <item
+        android:id="@+id/btnSelectDate"
+        android:title="Filter Date"/>
+
+    <item
+        android:id="@+id/btnRefresh"
+        android:title="Refresh Feed"/>
+</menu>

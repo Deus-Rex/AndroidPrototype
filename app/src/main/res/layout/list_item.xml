@@ -212,7 +212,7 @@
             android:layout_width="6dp"
             android:layout_height="match_parent"
             android:layout_marginRight="2dp"
-            android:background="@drawable/highlight" />
+            android:background="@drawable/feed_item_highlight" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -224,7 +224,8 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
 
                 <TextView
                 android:layout_width="wrap_content"
@@ -234,7 +235,9 @@
                 android:id="@+id/txtTitle"
                 android:layout_row="0"
                 android:layout_column="0"
-                android:layout_columnSpan="2" />
+                android:layout_columnSpan="2"
+                    android:layout_marginLeft="1dp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -250,25 +253,12 @@
                     <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/listView_StartDate"
-                    android:id="@+id/txtStartDateLabel"
-                    android:layout_row="1"
-                    android:layout_column="0"
-                    android:textStyle="bold"
-                    android:layout_marginTop="5dp"
-                        android:paddingStart="0dp"
-                    android:paddingLeft="0dp" />
-
-                    <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="@string/listView_Temporary"
                     android:id="@+id/txtStartDate"
                     android:layout_row="1"
                     android:layout_column="1"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp" />
+                        android:layout_marginLeft="1dp"
+                        android:textColor="#797979" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -280,14 +270,15 @@
                     <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/listView_EndDate"
+                    android:text="➜"
                     android:id="@+id/txtEndDateLabel"
                     android:layout_row="1"
                     android:layout_column="2"
                     android:textStyle="bold"
-                    android:layout_marginTop="5dp"
                         android:paddingStart="0dp"
-                    android:paddingLeft="0dp" />
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:textColor="#676767" />
 
                     <TextView
                     android:layout_width="wrap_content"
@@ -296,9 +287,7 @@
                     android:id="@+id/txtEndDate"
                     android:layout_row="1"
                     android:layout_column="3"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp" />
+                        android:textColor="#797979" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -314,7 +303,8 @@
             android:layout_marginRight="5dp"
             android:max="100"
             android:progress="50"
-            android:layout_columnSpan="4" />
+            android:layout_columnSpan="4"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -326,14 +316,12 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/listView_Date"
-                android:id="@+id/textView5"
+                android:id="@+id/txtDateLabel"
                 android:layout_row="7"
                 android:layout_column="0"
-                android:layout_marginTop="5dp"
-                android:layout_gravity="fill_horizontal|right"
-                android:textStyle="bold"
-                android:paddingStart="0dp"
-                android:paddingLeft="0dp" />
+                    android:textStyle="bold"
+                    android:layout_marginLeft="1dp"
+                    android:textColor="#797979" />
 
                 <TextView
                 android:layout_width="wrap_content"
@@ -343,16 +331,16 @@
                 android:id="@+id/txtDate"
                 android:layout_row="7"
                 android:layout_column="1"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="fill_horizontal" />
+                    android:layout_gravity="fill_horizontal"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="#797979" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <TextView
                 android:layout_width="wrap_content"
@@ -389,7 +377,8 @@
             android:layout_gravity="fill_horizontal|right"
             android:textStyle="bold"
             android:paddingStart="0dp"
-            android:paddingLeft="0dp" />
+            android:paddingLeft="0dp"
+                android:visibility="gone" />
 
             <TextView
             android:layout_width="wrap_content"
@@ -402,7 +391,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
-            android:layout_gravity="fill_horizontal" />
+            android:layout_gravity="fill_horizontal"
+                android:visibility="gone" />
 
             <TextView
             android:layout_width="wrap_content"
@@ -416,7 +406,8 @@
             android:layout_gravity="fill_horizontal|right"
             android:textStyle="bold"
             android:paddingStart="0dp"
-            android:paddingLeft="0dp" />
+            android:paddingLeft="0dp"
+                android:visibility="gone" />
 
             <TextView
             android:layout_width="wrap_content"
@@ -429,7 +420,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
-            android:layout_gravity="fill_horizontal" />
+            android:layout_gravity="fill_horizontal"
+                android:visibility="gone" />
 
         </LinearLayout>
     </LinearLayout>
