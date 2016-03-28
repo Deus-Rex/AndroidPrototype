@@ -34,6 +34,7 @@ public class RssParser {
     private ArrayList<TrafficItem> trafficItems = new ArrayList<>();
 
     private Date currentBuildDate = null; // Date of RSS build
+    public Boolean isParsed = true;
 
     private MainActivity mainActivity;
 
@@ -151,13 +152,21 @@ public class RssParser {
             if (rssData == null) return;
             rssData.getDocumentElement().normalize();
 
+            // Split feed into individual items
+            NodeList rssFeedItems = rssData.getElementsByTagName("item");
+
+            // If no items, set isParsed as false so that we can display message
+            if (rssFeedItems.getLength() == 0) {
+                isParsed = false;
+                return;
+            }
+
             // Get date from RSS feed, if it's the same as current, stop, otherwise set new date and continue
             Date newBuildDate = toDate(rssData.getElementsByTagName("lastBuildDate").item(0).getTextContent());
             if (newBuildDate == currentBuildDate) return;
             currentBuildDate = newBuildDate;
 
-            // Split feed into individual items
-            NodeList rssFeedItems = rssData.getElementsByTagName("item");
+
 
             // Parse each item for data
             for (int i = 0; i < rssFeedItems.getLength(); i++) {
