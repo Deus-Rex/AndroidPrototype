@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.LocalDate;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,16 +35,24 @@ public class RssParser {
 
     private Date currentBuildDate = null; // Date of RSS build
 
+    private MainActivity mainActivity;
+
     // Constructor - setup the feed using the input string
-    public RssParser(String inputRssUrl) {
+    public RssParser(String inputRssUrl, MainActivity activity) {
         if (inputRssUrl == null) return; // Return if no rss string exists
 
         try {
             URL rssURL = new URL(inputRssUrl); // Create URL from string
             new RawRssFeed().execute(rssURL); // Start the RSS AsyncTask
+            mainActivity = activity;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Calls the method on MainActivity to update the content of the tabs
+    private void UpdateActivity() {
+        mainActivity.refreshTabs();
     }
 
     // Return all items
@@ -179,7 +186,7 @@ public class RssParser {
 
         // Runs on main UI thread after the background task finishes
         protected void onPostExecute(String feed) {
-
+            UpdateActivity(); // Refresh the tabs on the main activity
         }
     }
 }

@@ -50,9 +50,9 @@ public class MainActivity extends FragmentActivity {
         actionBar = getActionBar();
         header = (TextView) findViewById(R.id.txtHeader);
         trafficListView = (ListView) findViewById(R.id.listTrafficView);
-        rssRoadworks = new RssParser(getString(R.string.rssRoadworks));
-        rssPlanned = new RssParser(getString(R.string.rssPlanned));
-        rssIncidents = new RssParser(getString(R.string.rssIncidents));
+        rssRoadworks = new RssParser(getString(R.string.rssRoadworks), this);
+        rssPlanned = new RssParser(getString(R.string.rssPlanned), this);
+        rssIncidents = new RssParser(getString(R.string.rssIncidents), this);
 
         // When items from ListView are clicked, show a Toast with the title of the item
         trafficListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,7 +136,7 @@ public class MainActivity extends FragmentActivity {
         actionBar.addTab(actionBar.newTab().setText(R.string.button_Roadworks).setTabListener(tabListener));
     }
 
-    private void refreshTabs() {
+    public void refreshTabs() {
         actionBar.selectTab(actionBar.getSelectedTab());
     }
 
@@ -149,22 +149,11 @@ public class MainActivity extends FragmentActivity {
         // Creates an adapter to convert the array to a list view
         TrafficItemAdapter adapter = new TrafficItemAdapter(this, inputTrafficList);
 
+        if (inputTrafficList.size() == 0) header.setText("Loading...");
+
         // Attach the adapter to a ListView
         trafficListView.setAdapter(adapter);
     }
-
-//    // Shows and returns all items from a feed
-//    private ArrayList<TrafficItem> getItems(RssParser trafficType) {
-//        if (trafficType == null) return null;
-//
-//        // Get and display the traffic items
-//        ArrayList<TrafficItem> listOfItems = trafficType.getTrafficItems();
-//        setListView(listOfItems);
-//
-//        // Set header to show feed type and number of items
-//        header.setText(String.format("%s [%d]", header.getText(), listOfItems.size()));
-//        return listOfItems;
-//    }
 
     // Shows and returns items from a specific date from a feed
     private ArrayList<TrafficItem> getItems(RssParser trafficType, Boolean canHaveFilter) {
