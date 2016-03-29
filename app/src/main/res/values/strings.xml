@@ -33,5 +33,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="msgRage">Expect some road rage</string>
+    <string name="msgStress">You can feel your stress levels rising</string>
+    <string name="msgMild">No excuses for being late this time</string>
+    <string name="msgCalm">You might even get away with leaving house later</string>
 
 </resources>
