@@ -82,6 +82,8 @@ public class MainActivity extends FragmentActivity {
 
         setupDatePicker();
         setupTabs();
+
+        showToast("Click the application header to view ambient mode");
     }
 
     @Override

@@ -38,6 +38,7 @@ public class AmbientModeFragment extends DialogFragment {
         int animation = R.anim.pulse_heart;
         String output = Integer.toString(totalTraffic) + " total reports\n";
 
+
         if (totalTraffic > 300) {
             resource = R.drawable.heart_rage;
             animation = R.anim.pulse_rage;

@@ -51,6 +51,17 @@ public class RssParser {
         }
     }
 
+    public RssParser(String inputRssUrl) {
+        if (inputRssUrl == null) return; // Return if no rss string exists
+
+        try {
+            URL rssURL = new URL(inputRssUrl); // Create URL from string
+            new RawRssFeed().execute(rssURL); // Start the RSS AsyncTask
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Calls the method on MainActivity to update the content of the tabs
     private void UpdateActivity() {
         mainActivity.refreshTabs();

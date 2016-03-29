@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.trafficscotlandproto.R;
@@ -38,34 +37,17 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
 
         // Get textviews from view
         TextView tvTitle = (TextView) convertView.findViewById(R.id.txtTitle);
-        TextView tvDesc = (TextView) convertView.findViewById(R.id.txtDescription);
         TextView tvDate = (TextView) convertView.findViewById(R.id.txtDate);
         TextView tvDateLabel = (TextView) convertView.findViewById(R.id.txtDateLabel);
-        TextView tvLink = (TextView) convertView.findViewById(R.id.txtLink);
-        TextView tvCoord = (TextView) convertView.findViewById(R.id.txtCoord);
         TextView tvStartDate = (TextView) convertView.findViewById(R.id.txtStartDate);
         TextView tvEndDate = (TextView) convertView.findViewById(R.id.txtEndDate);
-        ProgressBar pbDateProgress = (ProgressBar) convertView.findViewById(R.id.progressDate);
         View viewHighlight = convertView.findViewById(R.id.itemHighlight);
 
         // Populate the data into the template view using the data object
         tvTitle.setText(Utils.brToNewLine(item.getTitle()));
-        tvDesc.setText(Utils.brToNewLine(item.getDescription()));
         tvDate.setText(Utils.brToNewLine(item.getDateString()));
-        tvLink.setText(Utils.brToNewLine(item.getLink()));
-        tvCoord.setText(Utils.brToNewLine(item.getGeorss()));
-
-        // Set description if it exists, otherwise hide the labels
-        if (item.getDescription() != "") {
-            tvDesc.setText(Utils.brToNewLine(item.getDescription()));
-        } else {
-            TextView tvDescLabel = (TextView) convertView.findViewById(R.id.txtDescriptionLabel);
-            tvDesc.setVisibility(View.GONE); // Set visibility to off
-            tvDescLabel.setVisibility(View.GONE);;
-        }
 
         GradientDrawable gdHighlight = (GradientDrawable) viewHighlight.getBackground();
-
 
         // Set the start/end date only if they exist, otherwise hide the labels
         if (item.getStartDate() != null || item.getEndDate() != null) {
@@ -74,10 +56,6 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
 
             tvStartDate.setText(Utils.brToNewLine(item.getStartDateString()));
             tvEndDate.setText(Utils.brToNewLine(item.getEndDateString()));
-
-            // Set traffic progress
-            pbDateProgress.setProgress((int) item.getProgress());
-
 
             int length = Days.daysBetween(item.getStartDate(), item.getEndDate()).getDays();
             double progress = item.getProgress();
@@ -89,10 +67,6 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
             else if (length < 14) progressColour = Color.parseColor("#df9d00");                 // Orange
             else progressColour = Color.parseColor("#d22a00");                                  // Red
 
-            // Set progress bar colour
-            pbDateProgress.getProgressDrawable().setColorFilter(
-                    progressColour, android.graphics.PorterDuff.Mode.SRC_IN);
-
             // Set item feed_item_highlight colour
             gdHighlight.setColor(progressColour);
 
@@ -101,7 +75,6 @@ public class TrafficItemAdapter extends ArrayAdapter<TrafficItem> {
             tvStartDate.setVisibility(View.GONE); // Set visibility to off
             tvEndDate.setVisibility(View.GONE);
             tvEndDateLabel.setVisibility(View.GONE);
-            pbDateProgress.setVisibility(View.GONE);
 
             // Show published date
             tvDate.setText(item.getDateString());
