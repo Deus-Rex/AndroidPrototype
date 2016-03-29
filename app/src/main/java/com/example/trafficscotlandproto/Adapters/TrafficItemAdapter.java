@@ -1,4 +1,4 @@
-package com.example.trafficscotlandproto;
+package com.example.trafficscotlandproto.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.trafficscotlandproto.R;
+import com.example.trafficscotlandproto.TrafficItem;
+import com.example.trafficscotlandproto.Utils;
 
 import org.joda.time.Days;
 

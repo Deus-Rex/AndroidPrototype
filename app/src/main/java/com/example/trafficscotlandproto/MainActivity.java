@@ -16,6 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.trafficscotlandproto.Adapters.TrafficItemAdapter;
+import com.example.trafficscotlandproto.Fragments.AmbientModeFragment;
+import com.example.trafficscotlandproto.Fragments.ItemInfoFragment;
+
 import org.joda.time.LocalDate;
 
 import java.text.DecimalFormat;
@@ -32,9 +36,9 @@ public class MainActivity extends FragmentActivity {
     private ListView trafficListView;
     private Toast currentToast;
 
-    private RssParser rssRoadworks;
-    private RssParser rssPlanned;
-    private RssParser rssIncidents;
+    public static RssParser rssRoadworks;
+    public static RssParser rssPlanned;
+    public static RssParser rssIncidents;
 
     public static LocalDate selectedDate;
     private int datePickerID = 999;
@@ -61,7 +65,8 @@ public class MainActivity extends FragmentActivity {
 
             @Override
             public void onClick(View v) {
-                showToast("header clicked");
+                AmbientModeFragment newDialogTest = new AmbientModeFragment();
+                newDialogTest.show(getSupportFragmentManager(), "NoticeDialogFragment");
             }
         });
 
@@ -70,11 +75,8 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 clickedItem = (TrafficItem) parent.getItemAtPosition(position);
-                String output = "You clicked on: " + clickedItem.getTitle();
-                showToast(output);
-
-                ItemInfoFragment newDialogTest = new ItemInfoFragment();
-                newDialogTest.show(getSupportFragmentManager(), "NoticeDialogFragment");
+                ItemInfoFragment moreInfoDialog = new ItemInfoFragment();
+                moreInfoDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
             }
         });
 

@@ -1,4 +1,4 @@
-package com.example.trafficscotlandproto;
+package com.example.trafficscotlandproto.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.trafficscotlandproto.MainActivity;
+import com.example.trafficscotlandproto.R;
+import com.example.trafficscotlandproto.TrafficItem;
+import com.example.trafficscotlandproto.Utils;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
