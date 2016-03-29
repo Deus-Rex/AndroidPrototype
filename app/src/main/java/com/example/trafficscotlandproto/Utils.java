@@ -8,9 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by ryan on 15/03/16.
- */
+// Ryan Sharp - S1517442
+
 
 // General utilities class for useful functions that can be useful to more than one class
 public class Utils {

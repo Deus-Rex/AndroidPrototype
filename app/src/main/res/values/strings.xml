@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Ryan Sharp - S1517442-->
+
 <resources>
 
     <string name="app_name">Ryan Sharp - S1517442</string>
@@ -31,8 +34,6 @@
     <string name="msgLoading">Loading...</string>
     <string name="msgNoItems">No Traffic Reports</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="msgRage">Expect some road rage</string>
     <string name="msgStress">You can feel your stress levels rising</string>
     <string name="msgMild">No excuses for being late this time</string>

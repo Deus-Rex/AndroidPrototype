@@ -14,6 +14,8 @@ import com.example.trafficscotlandproto.MainActivity;
 import com.example.trafficscotlandproto.R;
 
 
+// Ryan Sharp - S1517442
+
 public class AmbientModeFragment extends DialogFragment {
 
     @Override
